@@ -24,12 +24,12 @@ export function HeroCarousel() {
   }, []);
 
   return (
-    <div className="relative w-full max-w-md md:max-w-lg lg:max-w-xl mx-auto md:ml-auto">
-      <div aria-hidden className="absolute -inset-4 bg-cream/40 blur-3xl rounded-full" />
+    <div className="relative w-full max-w-lg md:max-w-none mx-auto">
+      <div aria-hidden className="absolute -inset-6 bg-cream/40 blur-3xl rounded-full" />
       <motion.div
         animate={{ y: [0, -8, 0] }}
         transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-        className="relative aspect-[2/3] md:aspect-[3/4] lg:aspect-[2/3] max-h-[78vh] rounded-2xl overflow-hidden cinematic-vignette shadow-2xl shadow-brown/20"
+        className="relative aspect-[4/5] md:aspect-[5/6] lg:aspect-[4/5] w-full max-h-[82vh] rounded-2xl overflow-hidden cinematic-vignette shadow-2xl shadow-brown/20"
       >
         <AnimatePresence mode="sync">
           <motion.img

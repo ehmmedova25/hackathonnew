@@ -10,16 +10,18 @@ export function Navbar() {
             Xatirələr yaşadıqca yaşayır.
           </span>
         </Link>
-        <nav className="hidden md:flex items-center gap-10 text-xs uppercase tracking-[0.18em] text-foreground/70">
-          <a href="/#proses" className="hover:text-foreground transition-colors">Necə işləyir?</a>
-          <a href="/#haqqinda" className="hover:text-foreground transition-colors">Haqqında</a>
-        </nav>
-        <Link
-          to="/upload"
-          className="rounded-full bg-foreground text-background text-xs uppercase tracking-[0.18em] px-5 py-3 hover:bg-brown transition-colors duration-500"
-        >
-          Başla
-        </Link>
+        <div className="flex items-center gap-8 md:gap-10">
+          <nav className="hidden md:flex items-center gap-7 text-xs uppercase tracking-[0.18em] text-foreground/70">
+            <a href="/#proses" className="hover:text-foreground transition-colors">Necə işləyir?</a>
+            <a href="/#haqqinda" className="hover:text-foreground transition-colors">Haqqında</a>
+          </nav>
+          <Link
+            to="/upload"
+            className="rounded-full bg-foreground text-background text-xs uppercase tracking-[0.18em] px-5 py-3 hover:bg-brown transition-colors duration-500"
+          >
+            Başla
+          </Link>
+        </div>
       </div>
     </header>
   );

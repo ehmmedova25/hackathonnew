@@ -41,7 +41,7 @@ function Hero() {
     <section className="relative pt-32 md:pt-40 pb-24 md:pb-32 px-6 md:px-10">
       <LightLeaks />
       <GrainOverlay />
-      <div className="relative max-w-7xl mx-auto grid md:grid-cols-[1fr_0.85fr] gap-12 md:gap-16 lg:gap-20 items-center">
+      <div className="relative max-w-7xl mx-auto grid md:grid-cols-[1fr_1.05fr] gap-10 md:gap-14 lg:gap-16 items-center">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
