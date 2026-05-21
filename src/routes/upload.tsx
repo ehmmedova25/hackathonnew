@@ -5,6 +5,8 @@ import { Mic, Upload, ArrowRight, FileAudio, Clock, CheckCircle2 } from "lucide-
 import { GrainOverlay, LightLeaks } from "@/components/GrainOverlay";
 import hero3 from "@/assets/hero-3.jpg";
 import hero5 from "@/assets/hero-5.jpg";
+import axios from "axios";
+import { api } from "@/lib/api";
 
 export const Route = createFileRoute("/upload")({
   head: () => ({
@@ -19,11 +21,42 @@ export const Route = createFileRoute("/upload")({
 const EASE = [0.22, 1, 0.36, 1] as const;
 
 function UploadPage() {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
   const [dragging, setDragging] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
+  async function handleContinue() {
+    if (!file || loading) return;
 
+    setLoading(true);
+    setError(null);
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const { data } = await api.post("/transcribe", formData);
+
+      console.log("API response:", data);
+
+      navigate({ to: "/processing" });
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        setError(
+            err.response?.data?.message ||
+            err.response?.data?.error ||
+            err.message ||
+            "Fayl göndərilərkən xəta baş verdi.",
+        );
+      } else {
+        setError("Gözlənilməyən xəta baş verdi.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  }
   function pick(f: File | null | undefined) {
     if (!f) return;
     setFile(f);
@@ -135,32 +168,39 @@ function UploadPage() {
 
               <div className="mt-8 flex flex-col-reverse sm:flex-row items-stretch sm:items-center gap-3">
                 <button
-                  onClick={() => inputRef.current?.click()}
-                  className="inline-flex items-center justify-center gap-2 rounded-full border border-border px-6 py-3.5 text-xs uppercase tracking-[0.18em] hover:bg-cream/50 transition-colors"
+                    onClick={() => inputRef.current?.click()}
+                    className="inline-flex items-center justify-center gap-2 rounded-full border border-border px-6 py-3.5 text-xs uppercase tracking-[0.18em] hover:bg-cream/50 transition-colors"
                 >
-                  <Upload className="w-4 h-4" /> Fayl seç
+                  <Upload className="w-4 h-4"/> Fayl seç
                 </button>
                 <button
-                  className="inline-flex items-center justify-center gap-2 rounded-full border border-border px-6 py-3.5 text-xs uppercase tracking-[0.18em] hover:bg-cream/50 transition-colors"
+                    className="inline-flex items-center justify-center gap-2 rounded-full border border-border px-6 py-3.5 text-xs uppercase tracking-[0.18em] hover:bg-cream/50 transition-colors"
                 >
-                  <Mic className="w-4 h-4" /> Səs yaz
+                  <Mic className="w-4 h-4"/> Səs yaz
                 </button>
                 <button
-                  disabled={!file}
-                  onClick={() => navigate({ to: "/processing" })}
-                  className={`group flex-1 inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5 text-xs uppercase tracking-[0.18em] transition-all duration-500 ${
-                    file
-                      ? "bg-foreground text-background hover:bg-brown shadow-lg shadow-brown/10"
-                      : "bg-foreground/20 text-background/60 cursor-not-allowed"
-                  }`}
+                    disabled={!file || loading}
+                    onClick={handleContinue}
+                    className={`group flex-1 inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5 text-xs uppercase tracking-[0.18em] transition-all duration-500 ${
+                        file && !loading
+                            ? "bg-foreground text-background hover:bg-brown shadow-lg shadow-brown/10"
+                            : "bg-foreground/20 text-background/60 cursor-not-allowed"
+                    }`}
                 >
-                  Davam et <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                  {loading ? "Göndərilir..." : "Davam et"}
+                  <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1"/>
                 </button>
+                {error && (
+                    <p className="mt-4 text-sm text-red-600">
+                      {error}
+                    </p>
+                )}
               </div>
 
-              <div className="mt-8 pt-6 border-t border-cream/60 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-muted-foreground">
-                <span className="inline-flex items-center gap-2"><Clock className="w-3.5 h-3.5" /> Memoir hazırlanması orta hesabla 1–2 dəqiqə çəkir.</span>
-                <span className="inline-flex items-center gap-2"><FileAudio className="w-3.5 h-3.5" /> Səsiniz tam məxfi qalır.</span>
+              <div
+                  className="mt-8 pt-6 border-t border-cream/60 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-muted-foreground">
+                <span className="inline-flex items-center gap-2"><Clock className="w-3.5 h-3.5"/> Memoir hazırlanması orta hesabla 1–2 dəqiqə çəkir.</span>
+                <span className="inline-flex items-center gap-2"><FileAudio className="w-3.5 h-3.5"/> Səsiniz tam məxfi qalır.</span>
               </div>
             </div>
           </div>
