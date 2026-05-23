@@ -37,7 +37,10 @@ function UploadPage() {
       const formData = new FormData();
       formData.append("file", file);
 
-      const { data } = await api.post("/transcribe", formData);
+      const { data } = await api.post("/process-book", formData);
+      const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+      localStorage.setItem("memoir_pdf_url", `${BASE_URL}${data?.pdf}`);
+      localStorage.setItem("memoir_book", JSON.stringify(data?.book));
 
       console.log("API response:", data);
 
@@ -190,13 +193,10 @@ function UploadPage() {
                   {loading ? "Göndərilir..." : "Davam et"}
                   <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1"/>
                 </button>
-                {error && (
-                    <p className="mt-4 text-sm text-red-600">
-                      {error}
-                    </p>
-                )}
               </div>
-
+              {error && (
+                  <p className="mt-4 text-sm text-red-600">{error}</p>
+              )}
               <div
                   className="mt-8 pt-6 border-t border-cream/60 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-muted-foreground">
                 <span className="inline-flex items-center gap-2"><Clock className="w-3.5 h-3.5"/> Memoir hazırlanması orta hesabla 1–2 dəqiqə çəkir.</span>
